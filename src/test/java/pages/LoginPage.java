@@ -34,6 +34,11 @@ public class LoginPage {
     }
 
     public boolean isLoginErrorDisplayed(){
-        return driver.findElement(loginError).isDisplayed();
+        return !driver.findElements(loginError).isEmpty()
+                && driver.findElement(loginError).isDisplayed();
+    }
+
+    public String getLoginErrorMessage(){
+        return driver.findElement(loginError).getText();
     }
 }
