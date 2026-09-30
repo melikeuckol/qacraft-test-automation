@@ -8,6 +8,10 @@ import org.testng.annotations.BeforeMethod;
 public class BaseTest {
     protected WebDriver webDriver;
 
+    public WebDriver getWebDriver() {
+        return webDriver;
+    }
+
     @BeforeMethod
     public void setUp(){
         webDriver=new ChromeDriver();

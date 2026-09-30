@@ -1,19 +1,43 @@
 package tests;
 
 import base.BaseTest;
+import listeners.ScreenshotListener;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import pages.LoginPage;
+import org.testng.annotations.Listeners;
 
 import java.time.Duration;
 
+@Listeners(ScreenshotListener.class)
 public class LoginTest extends BaseTest {
 
     private WebDriverWait wait;
+
+    @DataProvider(name = "invalidLoginData")
+    public Object[][] invalidLoginData () {
+        return new Object[][]{
+                {"melikee@testt.com","wrongpsw"},
+                {"wrong@test.com","1234567"},
+                {"wrong@test.com","abcd"}
+        };
+    }
+
+    @DataProvider(name = "invalidEmailData")
+    public Object[][] invalidEmailData(){
+        return new Object[][]{
+                {"melike"},
+                {"melike@test"},
+                {"melike.com"},
+                {"@test.com"},
+                {"melike test@test.com"}
+        };
+    }
 
     @BeforeMethod
     public void setUpWait(){
@@ -31,12 +55,13 @@ public class LoginTest extends BaseTest {
         Assert.assertTrue(
                 webDriver.getCurrentUrl().contains("/dashboard")
         );
+        Assert.assertTrue(false);
     }
 
-    @Test
-    public void invalidLoginTest(){
+    @Test(dataProvider = "invalidLoginData")
+    public void invalidLoginTest(String email,String psw){
         LoginPage loginPage=new LoginPage(webDriver);
-        loginPage.login("melikee@testt.com","abcd");
+        loginPage.login(email,psw);
 
 
         wait.until(
@@ -77,10 +102,10 @@ public class LoginTest extends BaseTest {
                 "Password is required.");
     }
 
-    @Test
-    public void invalidEmailFormatTest(){
+    @Test(dataProvider = "invalidEmailData")
+    public void invalidEmailFormatTest(String email){
         LoginPage loginPage=new LoginPage(webDriver);
-        loginPage.enterEmail("melike@test");
+        loginPage.enterEmail(email);
         loginPage.enterPassword("1234567");
         loginPage.clickLogin();
 
